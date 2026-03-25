@@ -3,7 +3,6 @@ import os
 import urllib.request
 import urllib.error
 
-MIN_SEVERITY = float(os.environ.get("MIN_SEVERITY", "7.0"))
 DISCORD_WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
 # Opcional
@@ -39,12 +38,6 @@ def lambda_handler(event, context):
     severity = _to_float(detail.get("severity"))
     if severity is None:
         return {"statusCode": 400, "body": "No se pudo parsear detail.severity"}
-
-    if severity < MIN_SEVERITY:
-        return {
-            "statusCode": 200,
-            "body": f"Ignorado por severity={severity} < {MIN_SEVERITY}"
-        }
 
     account_id = str(detail.get("accountId") or event.get("account") or "unknown-account")
     region = str(detail.get("region") or event.get("region") or "unknown-region")
